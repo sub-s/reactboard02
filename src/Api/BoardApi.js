@@ -5,9 +5,11 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URI;
 
 // 리스트 api
-function ListApi(setIsLoading, setError, setData) {// Hook 에서  데이터 값을 받는다.
+function ListApi(searchValue, setIsLoading, setError, setData) {// Hook 에서  데이터 값을 받는다.
     axios
-        .get(`${API_URL}board/boardApiList`)
+        .get(`${API_URL}board/boardApiList`, {
+            params : searchValue,
+        })
         .then((res) => {
             let data = res.data;
             if (data.code === "0000") {

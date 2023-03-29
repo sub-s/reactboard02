@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
                 element : <BoardList />
             },
             {
-                path: '/BoardView', // 다른 기타 메뉴를 표시 해준다.
+                path: '/BoardView/:brdNo', // List.js에서 받아준 Param 값을 전달 받는다.
                 element : <BoardView />
             },
             {

@@ -1,15 +1,37 @@
 import React, { useEffect, useState } from "react";
 import Loading from "../../Components/Inc/Loading";
-import {BoardHook as Hook} from "../../Hook/BoardHook";
-
+import { BoardHook as Hook } from "../../Hook/BoardHook";
+import Paginate from "../../Components/Paginate/Paginate";
+import { useNavigate } from "react-router-dom";
 const BoardList = (props) => {
+  const navigate = useNavigate();
 
+  // 검색 기준으로 페이징을 생성 하고 searchValue 값을 hook으로 넘긴다.
+  const [searchValue, setSearchValue] = useState({
+    // 기본 셋팅 값을 설정
+    pageNum: 1, // 현재 페이지
+    pageSize: 10, // 화면에 노출할 개수
+    searchType: "all", // 검색 조건
+    searchText: "", // 검색어
 
-  const {isLoading, error, data} = Hook.ListHook()
+  });
+
+  const { isLoading, error, data } = Hook.ListHook(searchValue, setSearchValue);
+
+  // 상세 페이지 이동하기
+  const LinkMove = (url) => {
+    navigate(url);
+  };
 
   // 게시판 타이틀
-  const title = [{No:"No.", title:"제목", name:"이름", data: "날짜", read: "읽음" }];
-  const titleItems = title.map((item, index) => (
+  const title = [
+    { No: "No.", title: "제목", name: "이름", data: "날짜", read: "읽음" },
+  ];
+
+  // 게시판 타이틀
+  const titleItems =
+    title &&
+    title.map((item, index) => (
       <tr key={index}>
         <th>{item.No}</th>
         <th>{item.title}</th>
@@ -17,64 +39,94 @@ const BoardList = (props) => {
         <th>{item.data}</th>
         <th>{item.read}</th>
       </tr>
-  ));
+    ));
+
+  // 리스트 데이터
+  const listData =
+    data.list &&
+    data.list.map((item, index) => (
+      <tr key={item.brdNo} onClick={() => LinkMove(`/BoardView/${item.brdNo}`)}>
+        <td>{item.brdNum}</td>
+        <td>{item.brdTitle}</td>
+        <td>{item.brdName}</td>
+        <td>{item.regDate}</td>
+        <td>{item.viewCnt}</td>
+      </tr>
+    ));
+
+  // 페이징 함수
+  const paginate = (pageNum, pageSize) => {
+    setSearchValue({
+      ...searchValue,
+      pageNum: pageNum,
+      pageSize: pageSize,
+      // searchYn: "Y",
+    });
+  };
+
+  // 검색 버튼
+  const SearchBtn = () => {
+    let searchType = document.getElementById("searchType");
+    setSearchValue({
+      ...searchValue,
+
+      // 검색 버튼을 눌렀을때, 텍스트 값, 타입 값을 받아서 전달
+      searchText: document.getElementById("searchText").value,
+      searchType: searchType.options[document.getElementById("searchType").selectedIndex].value
+    });
+  };
+
+  // 인풋, 콤보박스 값이 변경 될 때 값을 받아오는 함수
+  // const Receive = (e) => {
+  //   const { name, value } = e.target; // 변경이 될때 name, value 값을 받아 온다.
+  //   setSearchValue({
+  //     ...searchValue,
+  //     [name]: value, // name 키를 가진 값을 value 로 설정
+  //   });
+  // };
 
   return (
     <>
-      { isLoading && <Loading /> }
+      {isLoading && <Loading />}
       <div className={"wrapper wrapper-content animated fadeInRight ecommerce"}>
         {/*검색 영역 */}
         <div className="ibox-content m-b-sm border-bottom">
           <div className="row">
-            <div className="col-sm-4">
+            <div className="col-sm-6">
               <div className="form-group">
-                <label className="col-form-label" htmlFor="product_name">
-                  Product Name
-                </label>
                 <input
                   type="text"
-                  id="product_name"
-                  name="product_name"
-                  placeholder="Product Name"
-                  className="form-control"
-                />
-              </div>
-            </div>
-            <div className="col-sm-2">
-              <div className="form-group">
-                <label className="col-form-label" htmlFor="price">
-                  Price
-                </label>
-                <input
-                  type="text"
-                  id="price"
-                  name="price"
-                  placeholder="Price"
-                  className="form-control"
-                />
-              </div>
-            </div>
-            <div className="col-sm-2">
-              <div className="form-group">
-                <label className="col-form-label" htmlFor="quantity">
-                  Quantity
-                </label>
-                <input
-                  type="text"
-                  id="quantity"
-                  name="quantity"
-                  placeholder="Quantity"
+                  name="searchText"
+                  id={"searchText"}
+                  placeholder="검색어"
                   className="form-control"
                 />
               </div>
             </div>
             <div className="col-sm-4">
               <div className="form-group">
-                <label className="col-form-label">Status</label>
-                <select name="status" id="status" className="form-control">
-                  <option value="1">Enabled</option>
-                  <option value="0">Disabled</option>
+                <select
+                  name="searchType"
+                  id="searchType"
+                  className="form-control"
+                >
+                  <option value="선택하세요">선택하세요</option>
+                  <option value="title">제목</option>
+                  <option value="contents">본문</option>
+                  <option value="regName">작성자</option>
+                  <option value="all">본문 + 작성자</option>
                 </select>
+              </div>
+            </div>
+            <div className="col-sm-2">
+              <div className="form-group">
+                <button
+                  type="button"
+                  className="btn btn-outline btn-primary"
+                  onClick={SearchBtn}
+                >
+                  검색
+                </button>
               </div>
             </div>
           </div>
@@ -116,70 +168,29 @@ const BoardList = (props) => {
               </div>
               <div className="ibox-content">
                 <table className="footable table table-stripped toggle-arrow-tiny">
-                  <thead>
-                    {titleItems}
-                  </thead>
+                  <thead>{titleItems}</thead>
                   <tbody>
-                  {data.list && data.list.map((item)=>(
-                      <tr key={item.brdNo}>
-                        <td>{item.brdNum}</td>
-                        <td>{item.brdTitle}</td>
-                        <td>{item.brdName}</td>
-                        <td>{item.regDate}</td>
-                        <td>{item.viewCnt}</td>
+                    {data.total > 0 && listData ? (
+                      listData
+                    ) : (
+                      <tr>
+                        <td colSpan={5}> 데이터가 없습니다.</td>
                       </tr>
-                  ))}
+                    )}
                   </tbody>
                   <tfoot>
                     <tr>
                       <td colSpan="5">
-                        <ul className="pagination float-right">
-                          <li className="footable-page-arrow disabled">
-                            <a data-page="first" href="#first">
-                              «
-                            </a>
-                          </li>
-                          <li className="footable-page-arrow disabled">
-                            <a data-page="prev" href="#prev">
-                              ‹
-                            </a>
-                          </li>
-                          <li className="footable-page active">
-                            <a data-page="0" href="#">
-                              1
-                            </a>
-                          </li>
-                          <li className="footable-page">
-                            <a data-page="1" href="#">
-                              2
-                            </a>
-                          </li>
-                          <li className="footable-page">
-                            <a data-page="2" href="#">
-                              3
-                            </a>
-                          </li>
-                          <li className="footable-page">
-                            <a data-page="3" href="#">
-                              4
-                            </a>
-                          </li>
-                          <li className="footable-page">
-                            <a data-page="4" href="#">
-                              5
-                            </a>
-                          </li>
-                          <li className="footable-page-arrow">
-                            <a data-page="next" href="#next">
-                              ›
-                            </a>
-                          </li>
-                          <li className="footable-page-arrow">
-                            <a data-page="last" href="#last">
-                              »
-                            </a>
-                          </li>
-                        </ul>
+                        {/* 페이지 */}
+                        <Paginate
+                          total={data.total}
+                          pageSize={data.pageSize}
+                          pageNum={data.pageNum}
+                          navigatePages={data.navigatePages}
+                          startRow={data.navigateFirstPage}
+                          endRow={data.navigateLastPage}
+                          paginate={paginate}
+                        />
                       </td>
                     </tr>
                   </tfoot>
