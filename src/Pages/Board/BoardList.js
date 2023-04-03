@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Loading from "../../Components/Inc/Loading";
 import { BoardHook as Hook } from "../../Hook/BoardHook";
-import Paginate from "../../Components/Paginate/Paginate";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../Components/Inc/Loading";
+import Paginate from "../../Components/Paginate/Paginate";
+import TopSearch from "../../Components/TopSearch/TopSearch";
 const BoardList = (props) => {
   const navigate = useNavigate();
 
@@ -13,10 +14,9 @@ const BoardList = (props) => {
     pageSize: 10, // 화면에 노출할 개수
     searchType: "all", // 검색 조건
     searchText: "", // 검색어
-
   });
 
-  const { isLoading, error, data } = Hook.ListHook(searchValue, setSearchValue);
+  const { isLoading, error, data } = Hook.ListHook(searchValue);
 
   // 상세 페이지 이동하기
   const LinkMove = (url) => {
@@ -72,65 +72,23 @@ const BoardList = (props) => {
 
       // 검색 버튼을 눌렀을때, 텍스트 값, 타입 값을 받아서 전달
       searchText: document.getElementById("searchText").value,
-      searchType: searchType.options[document.getElementById("searchType").selectedIndex].value
+      searchType: searchType.options[document.getElementById("searchType").selectedIndex].value,
     });
   };
 
-  // 인풋, 콤보박스 값이 변경 될 때 값을 받아오는 함수
-  // const Receive = (e) => {
-  //   const { name, value } = e.target; // 변경이 될때 name, value 값을 받아 온다.
-  //   setSearchValue({
-  //     ...searchValue,
-  //     [name]: value, // name 키를 가진 값을 value 로 설정
-  //   });
-  // };
+
+  const WriteBtn = (url) => {
+    navigate(url);
+  }
 
   return (
     <>
       {isLoading && <Loading />}
       <div className={"wrapper wrapper-content animated fadeInRight ecommerce"}>
         {/*검색 영역 */}
-        <div className="ibox-content m-b-sm border-bottom">
-          <div className="row">
-            <div className="col-sm-6">
-              <div className="form-group">
-                <input
-                  type="text"
-                  name="searchText"
-                  id={"searchText"}
-                  placeholder="검색어"
-                  className="form-control"
-                />
-              </div>
-            </div>
-            <div className="col-sm-4">
-              <div className="form-group">
-                <select
-                  name="searchType"
-                  id="searchType"
-                  className="form-control"
-                >
-                  <option value="선택하세요">선택하세요</option>
-                  <option value="title">제목</option>
-                  <option value="contents">본문</option>
-                  <option value="regName">작성자</option>
-                  <option value="all">본문 + 작성자</option>
-                </select>
-              </div>
-            </div>
-            <div className="col-sm-2">
-              <div className="form-group">
-                <button
-                  type="button"
-                  className="btn btn-outline btn-primary"
-                  onClick={SearchBtn}
-                >
-                  검색
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <TopSearch
+            event={SearchBtn}
+        />
 
         {/*리스트 영역 */}
         <div className="row">
@@ -174,7 +132,9 @@ const BoardList = (props) => {
                       listData
                     ) : (
                       <tr>
-                        <td colSpan={5}> 데이터가 없습니다.</td>
+                        <td style={{height: '300px', verticalAlign:'middle', textAlign:'center' }} colSpan={5}>
+                          <span>데이터가 없습니다.</span>
+                        </td>
                       </tr>
                     )}
                   </tbody>
@@ -191,6 +151,11 @@ const BoardList = (props) => {
                           endRow={data.navigateLastPage}
                           paginate={paginate}
                         />
+                        <button type="button" className="btn btn-primary float-right"
+                          onClick={()=> WriteBtn(`/BoardWrite`)}
+                        >
+                          글쓰기
+                        </button>
                       </td>
                     </tr>
                   </tfoot>
