@@ -13,7 +13,7 @@ function TopSearch(props) {
                         className="navbar-minimalize minimalize-styl-2 btn btn-primary "
                         href="#"
                     >
-                        <i className="fa fa-bars"></i>{" "}
+                        <i className="fa fa-bars"></i>
                     </a>
                     <form
                         role="search"
@@ -43,7 +43,7 @@ function TopSearch(props) {
                             data-toggle="dropdown"
                             href="#"
                         >
-                            <i className="fa fa-envelope"></i>{" "}
+                            <i className="fa fa-envelope"></i>
                             <span className="label label-warning">16</span>
                         </a>
                         <ul className="dropdown-menu dropdown-messages dropdown-menu-right">
@@ -61,7 +61,7 @@ function TopSearch(props) {
                                     </a>
                                     <div className="media-body">
                                         <small className="float-right">46h ago</small>
-                                        <strong>Mike Loreipsum</strong> started following{" "}
+                                        <strong>Mike Loreipsum</strong> started following
                                         <strong>Monica Smith</strong>. <br/>
                                         <small className="text-muted">
                                             3 days ago at 7:58 pm - 10.06.2014
@@ -107,7 +107,7 @@ function TopSearch(props) {
                                     </a>
                                     <div className="media-body ">
                                         <small className="float-right">23h ago</small>
-                                        <strong>Monica Smith</strong> love{" "}
+                                        <strong>Monica Smith</strong> love
                                         <strong>Kim Smith</strong>. <br/>
                                         <small className="text-muted">
                                             2 days ago at 2:30 am - 11.06.2014
@@ -119,7 +119,7 @@ function TopSearch(props) {
                             <li>
                                 <div className="text-center link-block">
                                     <a href="mailbox.html" className="dropdown-item">
-                                        <i className="fa fa-envelope"></i>{" "}
+                                        <i className="fa fa-envelope"></i>
                                         <strong>Read All Messages</strong>
                                     </a>
                                 </div>
@@ -132,7 +132,7 @@ function TopSearch(props) {
                             data-toggle="dropdown"
                             href="#"
                         >
-                            <i className="fa fa-bell"></i>{" "}
+                            <i className="fa fa-bell"></i>
                             <span className="label label-primary">8</span>
                         </a>
                         <ul className="dropdown-menu dropdown-alerts">
